@@ -101,11 +101,11 @@ def 線路資訊(線路編號, 方向號):
             '分站': 車站['order'],
             '車站編號': 車站['sni'],
             '線路車站編号': 車站['i'],
+            '過站車站編號': 車站['si'],
             '經度': 車站['lon'],
             '緯度': 車站['lat'],
             '地鐵': 地鐵,
-            'BRT': BOOL[車站['brt']],
-            'si': 車站['si']       
+            'BRT': BOOL[車站['brt']]
         })
     runb = data['retData']['runb']
     bus_list = []
@@ -117,13 +117,37 @@ def 線路資訊(線路編號, 方向號):
     for 車輛 in bus_list:
         結果['車輛列表'].append({
             'SubID': 車輛['sub'],
-            'ID': 車輛['i'],
+            'BusID': 車輛['i'],
             '車牌': 車輛['no'],
             '經度': 車輛['lo'],
             '緯度': 車輛['la'],
             '司機': 車輛['en'],
             'ec': 車輛['ec'],
             't': 車輛['t']
+        })
+    return 結果
+
+
+def 車輛資訊(BusID, SubID):
+    data = fetch(
+        'routeSub/getBySubId.do',
+        busId=BusID,
+        subId=SubID
+    )
+    if data['retCode'] != 0:
+        return None
+    結果 = {
+        '發班時間': data['retData']['d']['fbt'],
+        '過站表': [],
+        's': data['retData']['s'],
+        't': data['retData']['d']['t'],
+        'nb': data['retData']['d']['nb'],
+    }
+    for 車站 in data['retData']['d']['l']:
+        結果['過站表'].append({
+            '車站名稱': 車站['n'],
+            '預估時間': 車站['ti'],
+            '過站車站編號': 車站['i']            
         })
     return 結果
 
@@ -143,6 +167,10 @@ def main():
     route.add_argument('id', help='Route ID')
     route.add_argument('direction', help='0 or 1')
     route.set_defaults(func=lambda args: print(線路資訊(args.id, args.direction)) )
+    bus = subparsers.add_parser('bus', help='Specific Bus Info')
+    bus.add_argument('busid', help='Bus ID')
+    bus.add_argument('subid', help='Sub ID')
+    bus.set_defaults(func=lambda args: print(車輛資訊(args.busid, args.subid)))
     args = parser.parse_args()
     args.func(args)
 
