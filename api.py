@@ -138,6 +138,7 @@ def 車輛資訊(BusID, SubID):
         return None
     結果 = {
         '發班時間': data['retData']['d']['fbt'],
+        '班次類型': data['retData']['d']['n'],
         '過站表': [],
         's': data['retData']['s'],
         't': data['retData']['d']['t'],
@@ -147,7 +148,7 @@ def 車輛資訊(BusID, SubID):
         結果['過站表'].append({
             '車站名稱': 車站['n'],
             '預估時間': 車站['ti'],
-            '過站車站編號': 車站['i']            
+            '過站車站編號': 車站['i']   
         })
     return 結果
 
