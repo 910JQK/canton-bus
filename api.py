@@ -58,16 +58,22 @@ def 查詢(線路名稱):
 
 def 車站資訊(車站編號):
     data = fetch('routeStation/getByStation.do', stationNameId=車站編號)
-    if data['retCode'] != 0:
+    runbus = fetch('runbus/getByStation.do', stationNameId=車站編號)
+    if data['retCode'] != 0 or runbus['retCode'] != 0:
         return None
-    結果 = {'編號':車站編號,'名稱':data['retData']['n'],'線路':[]}
+    結果 = {'車站編號':車站編號,'車站名稱':data['retData']['n'],'線路':[]}
     for 線路 in data['retData']['l']:
+        次車距離 = -1
+        for 到站資訊 in runbus['retData']:
+            if str(到站資訊['i']) == 線路['rsi']:
+                次車距離 = 到站資訊['c']
         結果['線路'].append({
             '線路名稱': 線路['rn'],
             '方向': 方向名[線路['d']],
             '線路編號': 線路['ri'],
             '線路車站號': 線路['rsi'],
-            '始發終到': 線路['dn']         
+            '始發終到': 線路['dn'],
+            '次車距離': 次車距離
         })
     return 結果
 

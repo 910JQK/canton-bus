@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <h1>{{ 車站名稱 }}</h1>
+    <table>
+      {% for 線路 in 站距表 %}
+      <tr>
+	<td>
+	  <a href="{{ url_for('查詢線路', routeId=線路['線路編號']) }}">
+	    {{ 線路['線路名稱'] }}
+	  </a>
+	</td>
+	<td>
+	  <div>
+	    <span>上行</span>
+	    <span>{{ 線路['上行']['終點站'] }} 方向</span>
+	    {% if 線路['上行']['次車距離'] >= 0 %}
+	    <span>{{ 線路['上行']['次車距離'] }} 站</span>
+	    {% else %}
+	    <span>尚未发车</span>
+	    {% endif %}
+	  </div>
+	  <div>
+	    <span>下行</span>
+	    <span>{{ 線路['下行']['終點站'] }} 方向</span>
+	    {% if 線路['下行']['次車距離'] >= 0 %}
+	    <span>{{ 線路['下行']['次車距離'] }} 站</span>
+	    {% else %}
+	    <span>尚未发车</span>
+	    {% endif %}
+	  </div>
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
