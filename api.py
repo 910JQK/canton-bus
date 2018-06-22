@@ -33,8 +33,8 @@ def fetch(action, **kwargs):
     return json.loads(response.read())
 
 
-def 查詢(線路名稱):
-    data = fetch('getByName.do', name=線路名稱)
+def 搜尋(線路或車站名稱):
+    data = fetch('getByName.do', name=線路或車站名稱)
     if data['retCode'] != 0:
         return None
     結果 = {'線路':[],'車站':[]}
@@ -91,8 +91,8 @@ def 線路資訊(線路編號, 方向號):
         '巴士公司': rb['organName'],
         '線路名稱': rb['rn'],
         '方向': 方向名[rb['d']],
-        '首班': rb['ft'],
-        '尾班': rb['lt'],
+        '首班車': rb['ft'],
+        '尾班車': rb['lt'],
         'c': rb['c'],
         '車站列表': [],
         '車輛列表': []
@@ -142,8 +142,10 @@ def 車輛資訊(BusID, SubID):
     )
     if data['retCode'] != 0:
         return None
+    if data['retData']['d'] == '':
+        return None
     結果 = {
-        '發班時間': data['retData']['d']['fbt'],
+        '發班時間': ':'.join(data['retData']['d']['fbt'].split(':')[:-1]),
         '班次類型': data['retData']['d']['n'],
         '過站表': [],
         's': data['retData']['s'],

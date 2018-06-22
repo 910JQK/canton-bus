@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
   </head>
   <body>
+    <h1>{{ 資訊['線路名稱'] }}</h1>
+    <p>
+      <span>上行</span>
+      <span>{{ 資訊['上行首班車'] }}</span>
+      <span> -&gt; </span>
+      <span>{{ 資訊['上行尾班車'] }}</span>
+    </p>
     <table>
       {% for 車站 in 線路圖 %}
       <tr>
@@ -47,5 +54,11 @@
       </tr>
       {% endfor %}
     </table>
+    <p>
+      <span>下行</span>
+      <span>{{ 資訊['下行首班車'] }}</span>
+      <span> -&gt; </span>
+      <span>{{ 資訊['下行尾班車'] }}</span>
+    </p>
   </body>
 </html>

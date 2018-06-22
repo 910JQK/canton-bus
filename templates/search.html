@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />	  
+  </head>
+  <body>
+    <h1>广州实时公交</h1>
+    <form action="{{ url_for('搜尋頁') }}" method="get">
+      <input name="search" placeholder="站名或线路名" />
+      <input type="submit" value="搜索" />
+    </form>
+    <table>
+      {% for 線路 in 搜尋結果['線路'] %}
+      <tr>
+	<td>
+	  <a href="{{ url_for('查詢線路', routeId=線路['編號']) }}">
+	    {{ 線路['名稱'] }}
+	  </a>
+	</td>
+      </tr>
+      {% endfor %}
+      {% for 車站 in 搜尋結果['車站'] %}
+      <tr>
+	<td>
+	  <a href="{{ url_for('查詢車站', stationNameId=車站['編號']) }}">
+	    {{ 車站['名稱'] }}
+	  </a>
+	</td>
+      </tr>      
+      {% endfor %}
+    </table>
+  </body>
+</html>
