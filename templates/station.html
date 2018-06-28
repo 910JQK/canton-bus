@@ -2,47 +2,75 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { display: flex; justify-content: center; }
+      body { background-color: hsla(0, 0%, 93%); }
+      .item { background-color: hsla(0, 0%, 99%); }
+      h1 { text-align: center; }
+      .item { display: flex; }
+      .right { flex-grow: 1; }
+      .item { padding: 0.2em 0.5em; margin-bottom: 0.5em; }
+      .item { border-radius: 0.4em; }
+      .name { width: 3em; text-align: center; font-size: 1.2em; }
+      .name { padding-right: 0.2em; }
+      .name a { text-decoration: none; }
+      .d { color: hsla(0, 90%, 55%); font-size: 1.2em; }
+      .d.pass { color: gray; font-size: 1.1em; }
+      .d { display: inline-block; margin-left: 0.1em; }
+      .t { font-weight: bold; font-size: 1.1em; }
+    </style>
   </head>
   <body>
+    <div id="container">
     <h1>{{ 車站名稱 }}</h1>
-    <table>
+    <div id="table">
       {% for 線路 in 站距表 %}
-      <tr>
-	<td>
+      <div class="item">
+      <table>
+	<tr>
+	<td class="name">
 	  <a href="{{ url_for('查詢線路', routeId=線路['線路編號']) }}">
-	    {{ 線路['線路名稱'] }}
+	    {{ 線路['線路名稱'] | 刪除尾字 }}
 	  </a>
 	</td>
-	<td>
+	<td class="info">
 	  <div>
-	    <span>上行</span>
+	    <!-- <span>上行</span> -->
 	    {% if 線路.get('上行') %}
-	    <span>{{ 線路['上行']['終點站'] }} 方向</span>
+	    <span class="t">{{ 線路['上行']['終點站'] | 簡化總站名 }}</span>
+	    <span>方向</span>
 	    {% if 線路['上行']['次車距離'] >= 0 %}
-	    <span>{{ 線路['上行']['次車距離'] }} 站</span>
+	    <span class="d">{{ 線路['上行']['次車距離'] }} 站</span>
 	    {% else %}
-	    <span>尚未发车</span>
+	    <span class="d">尚未发班</span>
 	    {% endif %}
 	    {% else %}
-	    <span>不过站</span>
+	    <span class="d pass">上行不过站</span>
 	    {% endif %}
 	  </div>
 	  <div>
-	    <span>下行</span>
+	    <!-- <span>下行</span> -->
 	    {% if 線路.get('下行') %}
-	    <span>{{ 線路['下行']['終點站'] }} 方向</span>
+	    <span class="t">{{ 線路['下行']['終點站'] | 簡化總站名 }}</span>
+	    <span>方向</span>
 	    {% if 線路['下行']['次車距離'] >= 0 %}
-	    <span>{{ 線路['下行']['次車距離'] }} 站</span>
+	    <span class="d">{{ 線路['下行']['次車距離'] }} 站</span>
 	    {% else %}
-	    <span>尚未发车</span>
+	    <span class="d">尚未发班</span>
 	    {% endif %}
 	    {% else %}
-	    <span>不过站</span>
+	    <span class="d pass">下行不过站</span>
 	    {% endif %}
 	  </div>
 	</td>
-      </tr>
+	</tr>
+      </table>
+      <div class="right">
+      </div>
+      </div>
       {% endfor %}
-    </table>
+    </div>
+    </div>
   </body>
 </html>

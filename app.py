@@ -8,6 +8,10 @@ from process import *
 app = Flask(__name__)
 
 
+app.add_template_filter(刪除尾字, '刪除尾字')
+app.add_template_filter(簡化總站名, '簡化總站名')
+
+
 @app.route('/', methods=['GET'])
 def 搜尋頁():
     搜尋字串 = request.args.get('search')
@@ -44,6 +48,20 @@ def 查詢車站(stationNameId):
     return render_template(
         'station.html',  車站名稱=車站名稱, 站距表=各線路站距表
     )
+
+#站距表 = 取得站距表(4659)
+#表 = [
+#    {'線路名稱': 線路名稱, **資訊}
+#    for 線路名稱,資訊 in 站距表['各線路站距表'].items()
+#]
+#表.sort(key=lambda t: t['線路名稱'])
+#
+#@app.route('/test', methods=['GET'])
+#def 測試():
+#    global 表
+#    return render_template(
+#        'station.html',  車站名稱='科韵路棠安路口站', 站距表=表
+#    )
 
 
 def run():

@@ -168,7 +168,7 @@ def main():
     subparsers = parser.add_subparsers()
     lookup = subparsers.add_parser('lookup', help='Lookup Bus or Station')
     lookup.add_argument('string')
-    lookup.set_defaults(func=lambda args: print(查詢(args.string)),)
+    lookup.set_defaults(func=lambda args: print(搜尋(args.string)),)
     station = subparsers.add_parser('station', help='Station Info')
     station.add_argument('id', help='Station ID')
     station.set_defaults(func=lambda args: print(車站資訊(args.id)) )

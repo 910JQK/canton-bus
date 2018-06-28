@@ -1,27 +1,68 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />	  
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { display: flex; flex-direction: column; justify-content: center; }
+      body { background-color: hsla(0, 0%, 93%); }
+      h1 { text-align: center; }
+      a { text-decoration: none; }
+      #container { align-self: center; }
+      #container { background-color: hsla(0, 0%, 99%); }
+      #container { min-height: 80vh; padding: 0.5em 1em; }
+      #container { border-radius: 0.3em; }
+      #container { display: flex; flex-direction: column; align-items: center; }
+      form { display: flex; margin-bottom: 0.5em; }
+      [name="search"] { display: block; font-size: 1.3em; flex-grow: 1; }
+      [type="submit"] { display: block; font-size: 1.2em; margin-left: 0.7em; }
+      #result { align-self: stretch; }
+      .result { align-self: flex-start; width: 100%; }
+      .result, .result td { border: 1px solid gray; border-collapse: collapse; }
+      .header { font-size: 1.4em; font-weight: bold; margin-bottom: 0.3em; }
+      .item { font-size: 1.2em; padding: 0.2em 0.3em; }
+      /*.item a { display: block; }*/
+      
+      input[type="submit"] {
+      background-color: hsl(0, 0%, 94%);
+      background-image: linear-gradient(to bottom, hsl(0, 0%, 94%), hsl(0, 0%, 90%));
+      color: hsl(0, 0%, 29%);
+      border: 1px solid hsl(0, 0%, 79%);
+      border-radius: 3px;
+      box-shadow: 0 1px 2px hsla(0, 0%, 39%, 0.3);
+      }
+    </style>
   </head>
   <body>
+    <div id="container">
     <h1>广州实时公交</h1>
     <form action="{{ url_for('搜尋頁') }}" method="get">
       <input name="search" placeholder="站名或线路名" />
       <input type="submit" value="搜索" />
     </form>
-    <table>
+    <div id="result">
+    {% if 搜尋結果['線路'] | length > 0 %}
+    <hr/>
+    <div class="header">线路：</div>
+    <table class="result route">
       {% for 線路 in 搜尋結果['線路'] %}
-      <tr>
-	<td>
+      <tr class="item_tr">
+	<td class="item">
 	  <a href="{{ url_for('查詢線路', routeId=線路['編號']) }}">
 	    {{ 線路['名稱'] }}
 	  </a>
 	</td>
       </tr>
       {% endfor %}
+    </table>
+    {% endif %}
+    {% if 搜尋結果['車站'] | length > 0 %}
+    <hr/>
+    <div class="header">车站：</div>
+    <table class="result station">
       {% for 車站 in 搜尋結果['車站'] %}
-      <tr>
-	<td>
+      <tr class="item_tr">
+	<td class="item">
 	  <a href="{{ url_for('查詢車站', stationNameId=車站['編號']) }}">
 	    {{ 車站['名稱'] }}
 	  </a>
@@ -29,5 +70,8 @@
       </tr>      
       {% endfor %}
     </table>
+    {% endif %}
+    </div>
+    </div>
   </body>
 </html>
