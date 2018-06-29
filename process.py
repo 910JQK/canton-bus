@@ -178,7 +178,10 @@ def 簡化站名(車站名):
         #return 簡化總站名(車站名)
         return 車站名
     elif 車站名[-1] == '站':
-        return 車站名[:-1]
+        if len(車站名) < 3 or 車站名[-3:] not in ['火车站', '客运站']:
+            return 車站名[:-1]
+        else:
+            return 車站名
     else:
         return 車站名
 

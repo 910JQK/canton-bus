@@ -30,7 +30,8 @@
       <table>
 	<tr>
 	<td class="name">
-	  <a href="{{ url_for('查詢線路', routeId=線路['線路編號']) }}">
+	  <a href="{{ url_for('查詢線路', routeId=線路['線路編號']) }}"
+	     target="_blank">
 	    {{ 線路['線路名稱'] | 刪除尾字 }}
 	  </a>
 	</td>
