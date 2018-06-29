@@ -5,9 +5,22 @@ from flask import Flask, Response, render_template, request, url_for
 from datetime import datetime, timedelta
 from functools import wraps
 from process import *
+import sys
+
+
+class PrefixMiddleware(object):
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+    def __call__(self, environ, start_response):
+        #environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+        environ['SCRIPT_NAME'] = self.prefix
+        return self.app(environ, start_response)
 
 
 app = Flask(__name__)
+if len(sys.argv) > 1:
+    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=sys.argv[1])
 
 
 app.add_template_filter(刪除尾字, '刪除尾字')
