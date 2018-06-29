@@ -84,6 +84,7 @@ def 取得線路全資訊(線路編號):
                 '下一站': 下一站,
                 '終點站': 終點站
             })
+        車輛表.sort(key=lambda t: t['發班時間'])
         return 車輛表
     上行車輛表 = 取得車輛表(上行車輛資訊)
     下行車輛表 = 取得車輛表(下行車輛資訊)
@@ -188,3 +189,14 @@ def 修飾分站名(分站名):
         return 圈數字[int(分站名)]
     else:
         return 分站名
+
+
+def 取得分站類型(分站名):
+    if 分站名 is None:
+        return '無站'
+    elif 分站名[0] in ['N', 'S']:
+        return 'BRT'
+    elif 分站名 == '0':
+        return '唯一站'
+    else:
+        return '多站'

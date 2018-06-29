@@ -14,11 +14,18 @@
           padding: 0.7em 1.2em;
       }
       .substation { width: 1.5em; text-align: center; font-size: 1.2em; }
+      .substation.none { color: gray; }
+      .substation.brt { color: hsl(20, 90%, 50%); }
+      .substation.brt { font-family: sans-serif; font-weight: bold; }
+      .substation.multiple { color: hsl(121, 90%, 30%); }
+      .substation.multiple { font-family: serif; font-weight: bold; }
+      .substation.unique { color: hsl(121, 90%, 35%); }
       .station { text-align: center; font-size: 1.2em; }
       .station_detail { font-size: 0.8em; color: #0000EE; }
       .bus { color: hsl(0, 90%, 65%); }
-      .bus { text-align: center; }
-      .bus_terminal { font-size: 0.6em; }
+      .bus_td.left .bus { text-align: left; }
+      .bus_td.right .bus { text-align: right; }
+      .bus_terminal { font-size: 0.75em; }      
       .departure { border: 2px solid hsl(0, 80%, 60%); border-radius: 0.2em; }
       .departure { display: inline-block; }
       .departure { padding: 0.1em 0.2em; margin: 0.1em 0em; }
@@ -36,73 +43,101 @@
       <span>{{ 資訊['上行尾班車'] }}</span>
     </p>
     <table class="item">
-      {% for 車站 in 線路圖 %}
-      <tr>
-	<td class="bus_td left">
-	  {% for 車輛 in 車站['將到車輛']['上行'] %}
-	  <div class="bus left">
-	    <div class="bus_info">
-	      <span class="departure">{{ 車輛['發班時間'] }}</span>
-	      {% if '总站' not in 車站['車站名稱'] %}
-	      <span class="arrow">⬇</span>
+      {% macro 顯示將到車輛(車輛表, 畫箭頭, 方向) %}
+	<div class="bus_wrapper">
+	  {% for 車輛 in 車輛表 %}
+	    <div class="bus">
+	      {% if 方向 == '上行' %}
+		<div class="bus_terminal">
+		  {% if 車輛['班次類型'] == '短线' %}
+		    ({{ 車輛['終點站'] | 去除括號 | 簡化站名 }})
+		  {% endif %}
+		</div>
+		<div class="bus_info">
+		  <span class="departure">{{ 車輛['發班時間'] }}</span>
+		  {% if 畫箭頭 and loop.index0 == (車輛表|length)-1 %}
+		    <span class="arrow">⬇</span>
+		  {% endif %}
+		</div>
+	      {% elif 方向 == '下行' %}
+		<div class="bus_info">
+		  {% if 畫箭頭 and loop.index0 == 0 %}
+		    <span class="arrow">⬆</span>
+		  {% endif %}
+		  <span class="departure">{{ 車輛['發班時間'] }}</span>
+		</div>
+		<div class="bus_terminal">
+		  {% if 車輛['班次類型'] == '短线' %}
+		    ({{ 車輛['終點站'] | 去除括號 | 簡化站名 }})
+		  {% endif %}
+		</div>		
 	      {% endif %}
 	    </div>
-	    <div class="bus_terminal">
-	      {% if 車輛['班次類型'] == '短线' %}
-	      ({{ 車輛['終點站'] | 去除括號 }})
-	      {% endif %}
-	    </div>
-	  </div>
 	  {% endfor %}
-	</td>
-	<td class="substation left">
-	  {% if 車站['上行分站'] is none %}
-	  ＊	  
-	  {% elif 車站['上行分站'] == '0' %}
-	  ●
-	  {% else %}
-	  {{ 車站['上行分站'] | 修飾分站名 }}
-	  {% endif %}
-	</td>
+	</div>      
+      {% endmacro %}
+      {% macro 顯示分站(分站名) %}
+	{% set 分站類型 = 分站名 | 取得分站類型 %}
+	{% if 分站類型 == '無站' %}
+	  <td class="substation left none">＊</td>
+	{% elif 分站類型 == '唯一站' %}
+	  <td class="substation left unique">●</td>
+	{% elif 分站類型 == 'BRT' %}
+	  <td class="substation left brt">
+	    {{ 分站名 }}
+	  </td>
+	{% else %}
+	  <td class="substation left multiple">
+	    {{ 分站名 | 修飾分站名 }}
+	  </td>
+	{% endif %}
+      {% endmacro %}
+      {% for 車站 in 線路圖 %}
+      {% set 車站索引 = loop.index0 %}
+      {% set 不是首站 = (車站索引 != 0) %} {# 首站即上行始發站 #}
+      {% set 不是尾站 = (車站索引 != (線路圖|length)-1) %} {# 尾站即下行始發站 #}
+      {% set 上行有車 = 車站['將到車輛']['上行'] | length > 0 %}
+      {% set 下行有車 = 車站['將到車輛']['下行'] | length > 0 %}
+      {% if 上行有車 %}
+	<tr>
+	  <td class="bus_td left">
+	    {{ 顯示將到車輛(車站['將到車輛']['上行'], 不是首站, '上行') }}
+	  </td>
+	  <td></td>
+	  <td></td>
+	  <td></td>
+	  <td></td>
+	</tr>
+      {% endif %}
+      <tr>
+	<td></td>
+	{{ 顯示分站(車站['上行分站']) }}
 	<td class="station">
 	  <a href="{{ url_for('查詢車站', stationNameId=車站['車站編號']) }}"
 	     target="_blank">
-	    {{ 車站['車站名稱'] | 簡化站名 | 去除括號內容 }}
+	     {{ 車站['車站名稱'] | 簡化站名 | 去除括號內容 }}
 	  </a>
 	  <div class="station_detail">
 	    {% set detail = 車站['車站名稱'] | 簡化站名 | 提取括號 %}
 	    {% if detail | length > 0 %}
-	    （{{ detail }}）
+	      （{{ detail }}）
 	    {% endif %}
 	  </div>
 	</td>
-	<td class="substation right">
-	  {% if 車站['下行分站'] is none %}
-	  ＊
-	  {% elif 車站['下行分站'] == '0' %}
-	  ●	  
-	  {% else %}
-	  {{ 車站['下行分站'] | 修飾分站名 }}
-	  {% endif %}
-	</td>
-	<td class="bus_td right">
-	  {% for 車輛 in 車站['將到車輛']['下行'] %}
-	  <div class="bus right">
-	    <div class="bus_info">
-	      {% if '总站' not in 車站['車站名稱'] %}
-	      <span class="arrow">⬆</span>
-	      {% endif %}
-	      <span class="departure">{{ 車輛['發班時間'] }}</span>
-	    </div>
-	    <div class="bus_terminal">
-	      {% if 車輛['班次類型'] == '短线' %}
-	      ({{ 車輛['終點站'] | 去除括號 }})
-	      {% endif %}
-	    </div>
-	  </div>
-	  {% endfor %}
-	</td>
+	{{ 顯示分站(車站['下行分站']) }}
+	<td></td>
       </tr>
+      {% if 下行有車 %}
+	<tr>
+	  <td></td>
+	  <td></td>
+	  <td></td>
+	  <td></td>
+	  <td class="bus_td right">
+	    {{ 顯示將到車輛(車站['將到車輛']['下行'], 不是尾站, '下行') }}
+	  </td>
+	</tr>
+      {% endif %}   
       {% endfor %}
     </table>
     <p class="item time_range right">
