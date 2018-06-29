@@ -2,6 +2,8 @@
 
 
 from flask import Flask, Response, render_template, request, url_for
+from datetime import datetime, timedelta
+from functools import wraps
 from process import *
 
 
@@ -18,7 +20,31 @@ app.add_template_filter(修飾分站名, '修飾分站名')
 app.add_template_filter(取得分站類型, '取得分站類型')
 
 
+access_time = {}
+
+
+def time_interval(sec):
+    def decorator(f):
+        @wraps(f)
+        def F(*args, **kwargs):
+            global access_time
+            ip = request.remote_addr
+            if access_time.get(ip):
+                if datetime.now() - access_time[ip] < timedelta(seconds=sec):
+                    response = Response(render_template('frequent.html'))
+                    response.status_code = 400
+                    return response
+                else:
+                    access_time[ip] = datetime.now()
+            else:
+                access_time[ip] = datetime.now()
+            return f(*args, **kwargs)
+        return F
+    return decorator
+
+
 @app.route('/', methods=['GET'])
+@time_interval(1)
 def 搜尋頁():
     搜尋字串 = request.args.get('search')
     if 搜尋字串:
@@ -29,6 +55,7 @@ def 搜尋頁():
 
 
 @app.route('/route/<int:routeId>', methods=['GET'])
+@time_interval(5)
 def 查詢線路(routeId):
     資訊 = 取得線路全資訊(routeId)
     線路圖 = 資訊['線路圖']
@@ -43,6 +70,7 @@ def 查詢線路(routeId):
 
 
 @app.route('/station/<int:stationNameId>', methods=['GET'])
+@time_interval(2)
 def 查詢車站(stationNameId):
     站距表 = 取得站距表(stationNameId)
     車站名稱 = 站距表['車站名稱']
