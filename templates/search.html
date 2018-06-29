@@ -13,7 +13,7 @@
       a { text-decoration: none; }
       #container { align-self: center; }
       #container { background-color: hsl(0, 0%, 99%); }
-      #container { min-height: 80vh; padding: 0.5em 1em; }
+      #container { min-height: 70vh; padding: 0.5em 1em; }
       #container { border-radius: 0.3em; }
       #container { display: flex; flex-direction: column; align-items: center; }
       form { display: flex; margin-bottom: 0.5em; }
@@ -24,7 +24,8 @@
       .result, .result td { border: 1px solid gray; border-collapse: collapse; }
       .header { font-size: 1.4em; font-weight: bold; margin-bottom: 0.3em; }
       .item { font-size: 1.2em; padding: 0.2em 0.3em; }
-      /*.item a { display: block; }*/
+      .item a { display: block; }
+      #comment { text-align: center; color: hsl(0, 0%, 20%); }
       
       input[type="submit"] {
       background-color: hsl(0, 0%, 94%);
@@ -78,5 +79,8 @@
     {% endif %}
     </div>
     </div>
+    <p id="comment">
+      网站尚在调试中。由于无法得到原始数据，请求 API 的时间可能较长，请耐心等待。如遇请求超时，刷新即可。
+    </p>
   </body>
 </html>
