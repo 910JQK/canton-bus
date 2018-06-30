@@ -66,7 +66,7 @@ def 搜尋頁():
 
 
 @app.route('/route/<int:routeId>', methods=['GET'])
-@time_interval(7)
+@time_interval(4)
 def 查詢線路(routeId):
     資訊 = 取得線路全資訊(routeId)
     線路圖 = 資訊['線路圖']
