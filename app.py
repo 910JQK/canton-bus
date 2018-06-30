@@ -42,7 +42,7 @@ def time_interval(sec):
             ip = request.remote_addr
             if access_time.get(ip):
                 if datetime.now() - access_time[ip] < timedelta(seconds=sec):
-                    response = Response(render_template('frequent.html'))
+                    response = Response(render_template('busy.html'))
                     response.status_code = 400
                     return response
                 else:
