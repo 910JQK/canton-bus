@@ -63,7 +63,7 @@ def 以位置搜尋API():
     經度 = str(request.args.get('lon'))
     緯度 = str(request.args.get('lat'))
     if regex.fullmatch(經度) and regex.fullmatch(緯度):
-        return jsonify(以位置搜尋(經度, 緯度))
+        return jsonify({'列表': 以位置搜尋(經度, 緯度)})
     else:
         abort(400)
 

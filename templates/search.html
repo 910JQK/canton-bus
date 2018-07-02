@@ -36,6 +36,39 @@
       box-shadow: 0 1px 2px hsl(0, 0%, 39%, 0.3);
       }
     </style>
+    <script type="text/javascript">
+      var req, data;
+      function init() {
+	  if(navigator.geolocation && location.search == '') {
+	      navigator.geolocation.getCurrentPosition(callback);
+	  }
+      }
+      function callback(position) {
+	  req = new XMLHttpRequest();
+	  req.addEventListener('readystatechange', function(){
+	      if(req.readyState == 4 && req.status == 200) {
+		  data = JSON.parse(req.responseText);
+		  var list = data['列表'];
+		  for(var i=0; i<list.length; i++) {
+		      var tr = document.createElement('tr');
+		      var td = document.createElement('td');
+		      var a = document.createElement('a');
+		      tr.classList.add('item_tr');
+		      td.classList.add('item');
+		      a.href = '/station/' + list[i]['車站編號'];
+		      a.target = '_blank';
+		      a.textContent = list['車站名稱'];
+		      td.appendChild(a);
+		      tr.appendChild(td);
+		      locate_table.appendChild(tr);
+		  }
+	      }
+	  })
+	  req.open('GET', 'location');
+	  req.send();
+      }
+      window.addEventListener('load', init);
+    </script>
     <title>广州实时公交</title>
   </head>
   <body>
@@ -46,6 +79,12 @@
       <input type="submit" value="搜索" />
     </form>
     <div id="result">
+      <div id="locate" style="display: none;">
+	<hr/>
+	<div class="header">定位：</div>
+	<table id="locate_table" class="result locate">
+	</table>
+      </div>      
     {% if 搜尋結果['線路'] | length > 0 %}
     <hr/>
     <div class="header">线路：</div>
