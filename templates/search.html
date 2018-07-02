@@ -64,7 +64,11 @@
 		  }
 	      }
 	  })
-	  req.open('GET', 'location');
+	  req.open(
+	      'GET',
+	      'location?lon=' + position.coords.longitude
+		  + '&lat=' + position.coords.latitude
+	  );
 	  req.send();
       }
       window.addEventListener('load', init);
