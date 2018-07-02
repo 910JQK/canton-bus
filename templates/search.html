@@ -57,11 +57,12 @@
 		      td.classList.add('item');
 		      a.href = '/station/' + list[i]['車站編號'];
 		      a.target = '_blank';
-		      a.textContent = list['車站名稱'];
+		      a.textContent = list[i]['車站名稱'];
 		      td.appendChild(a);
 		      tr.appendChild(td);
 		      locate_table.appendChild(tr);
 		  }
+		  locate.style.display = '';
 	      }
 	  })
 	  req.open(
