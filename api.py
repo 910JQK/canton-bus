@@ -56,6 +56,24 @@ def 搜尋(線路或車站名稱):
     return 結果
 
 
+def 以位置搜尋(經度, 緯度):
+    data = fetch(
+        'station/getByCoord.do',
+        longitude=經度, latitude=緯度,
+        range='500', withLCheck='t'
+    )
+    if data['retCode'] != 0:
+        return None
+    結果 = []
+    for 車站 in data['retData']:
+        結果.append({
+            '車站編號': 車站['i'],
+            '車站名稱': 車站['n'],
+            'c': 車站['c']
+        })
+    return 結果
+
+
 def 車站資訊(車站編號):
     data = fetch('routeStation/getByStation.do', stationNameId=車站編號)
     runbus = fetch('runbus/getByStation.do', stationNameId=車站編號)
@@ -169,6 +187,12 @@ def main():
     lookup = subparsers.add_parser('lookup', help='Lookup Bus or Station')
     lookup.add_argument('string')
     lookup.set_defaults(func=lambda args: print(搜尋(args.string)),)
+    location = subparsers.add_parser('location', help='Lookup by Geolocation')
+    location.add_argument('lon', help='Longitude')
+    location.add_argument('lat', help='Latitude')
+    location.set_defaults(
+        func=lambda args: print(以位置搜尋(args.lon, args.lat))
+    )
     station = subparsers.add_parser('station', help='Station Info')
     station.add_argument('id', help='Station ID')
     station.set_defaults(func=lambda args: print(車站資訊(args.id)) )

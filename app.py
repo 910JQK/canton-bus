@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 
-from flask import Flask, Response, render_template, request, url_for
+from flask import Flask, Response
+from flask import render_template, request, url_for, jsonify, abort
 from datetime import datetime, timedelta
 from functools import wraps
 from process import *
 import sys
+import re
 
 
 class PrefixMiddleware(object):
@@ -52,6 +54,18 @@ def time_interval(sec):
             return f(*args, **kwargs)
         return F
     return decorator
+
+
+@app.route('/location', methods=['GET'])
+@time_interval(1)
+def 以位置搜尋API():
+    regex = re.compile('\d+\.\d+')
+    經度 = str(request.args.get('lon'))
+    緯度 = str(request.args.get('lat'))
+    if regex.fullmatch(經度) and regex.fullmatch(緯度):
+        return jsonify(以位置搜尋(經度, 緯度))
+    else:
+        abort(400)
 
 
 @app.route('/', methods=['GET'])
