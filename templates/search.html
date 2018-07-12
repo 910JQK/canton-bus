@@ -37,11 +37,12 @@
       }
     </style>
     <script type="text/javascript">
-      var req, data;
+      var req, data, history_data = {}, N = 10;
       function init() {
 	  if(navigator.geolocation && location.search == '') {
 	      navigator.geolocation.getCurrentPosition(callback);
 	  }
+	  init_history();
       }
       function callback(position) {
 	  req = new XMLHttpRequest();
@@ -72,57 +73,108 @@
 	  );
 	  req.send();
       }
+      function init_history() {
+	  var a = document.querySelectorAll('.item a');
+	  for(var i=0; i<a.length; i++) {
+	      a[i].addEventListener('click', function() {
+		  add_history(this.textContent, this.href);
+	      });
+	  }
+	  if(localStorage.history) {
+	      history_data = JSON.parse(localStorage.history);
+	  }
+	  var arr = [];
+	  for(var name in history_data) {
+	      if(history_data.hasOwnProperty(name)) {
+		  arr.push(
+		      {
+			  'name': name,
+			  'url': history_data[name]['url'],
+			  'date': history_data[name]['date']
+		      }
+		  )
+	      }
+	  }
+	  arr.sort(function(x, y) { return (x.date < y.date); });
+	  function min(x, y) { if(x<y) return x; else return y; };
+	  for(var i=0; i<min(N, arr.length); i++) {
+	      var tr = document.createElement('tr');
+	      tr.classList.add('item_tr');
+	      var td = document.createElement('td');
+	      td.classList.add('item');
+	      var a = document.createElement('a');
+	      a.textContent = arr[i].name;
+	      a.href = arr[i].url;
+	      a.target = '_blank';
+	      td.appendChild(a);
+	      tr.appendChild(td);
+	      history_table.appendChild(tr);
+	  }
+	  if(arr.length > 0) {
+	      history_wrapper.style.display = '';
+	  }
+      }
+      function add_history(name, url) {
+	  history_data[name] = {'url': url, 'date': Date.now()};
+	  localStorage.history = JSON.stringify(history_data);
+      }
       window.addEventListener('load', init);
     </script>
     <title>广州实时公交</title>
   </head>
   <body>
     <div id="container">
-    <h1>广州实时公交</h1>
-    <form action="{{ url_for('搜尋頁') }}" method="get">
-      <input name="search" placeholder="站名或线路名" />
-      <input type="submit" value="搜索" />
-    </form>
-    <div id="result">
-      <div id="locate" style="display: none;">
+      <h1>广州实时公交</h1>
+      <form action="{{ url_for('搜尋頁') }}" method="get">
+	<input name="search" placeholder="站名或线路名" />
+	<input type="submit" value="搜索" />
+      </form>
+      <div id="result">
+	<div id="locate" style="display: none;">
+	  <hr/>
+	  <div class="header">定位：</div>
+	  <table id="locate_table" class="result locate">
+	  </table>
+	</div>
+	{% if 搜尋結果['線路'] | length > 0 %}
 	<hr/>
-	<div class="header">定位：</div>
-	<table id="locate_table" class="result locate">
+	<div class="header">线路：</div>
+	<table class="result route">
+	  {% for 線路 in 搜尋結果['線路'] %}
+	  <tr class="item_tr">
+	    <td class="item">
+	      <a href="{{ url_for('查詢線路', routeId=線路['編號']) }}"
+		 target="_blank">
+		{{ 線路['名稱'] }}
+	      </a>
+	    </td>
+	  </tr>
+	  {% endfor %}
 	</table>
-      </div>      
-    {% if 搜尋結果['線路'] | length > 0 %}
-    <hr/>
-    <div class="header">线路：</div>
-    <table class="result route">
-      {% for 線路 in 搜尋結果['線路'] %}
-      <tr class="item_tr">
-	<td class="item">
-	  <a href="{{ url_for('查詢線路', routeId=線路['編號']) }}"
-	     target="_blank">
-	    {{ 線路['名稱'] }}
-	  </a>
-	</td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% endif %}
-    {% if 搜尋結果['車站'] | length > 0 %}
-    <hr/>
-    <div class="header">车站：</div>
-    <table class="result station">
-      {% for 車站 in 搜尋結果['車站'] %}
-      <tr class="item_tr">
-	<td class="item">
-	  <a href="{{ url_for('查詢車站', stationNameId=車站['編號']) }}"
-	     target="_blank">
-	    {{ 車站['名稱'] }}
-	  </a>
-	</td>
-      </tr>      
-      {% endfor %}
-    </table>
-    {% endif %}
-    </div>
+	{% endif %}
+	{% if 搜尋結果['車站'] | length > 0 %}
+	<hr/>
+	<div class="header">车站：</div>
+	<table class="result station">
+	  {% for 車站 in 搜尋結果['車站'] %}
+	  <tr class="item_tr">
+	    <td class="item">
+	      <a href="{{ url_for('查詢車站', stationNameId=車站['編號']) }}"
+		 target="_blank">
+		{{ 車站['名稱'] }}
+	      </a>
+	    </td>
+	  </tr>      
+	  {% endfor %}
+	</table>
+	{% endif %}
+	<div id="history_wrapper" style="display:none;">
+	  <hr/>
+	  <div class="header">查询历史：</div>
+	  <table class="result history" id="history_table">
+	  </table>
+	</div>
+      </div>
     </div>
     <p id="comment">
       网站尚在调试中。由于无法得到原始数据，请求 API 的时间可能较长，请耐心等待。如遇请求超时，刷新即可。
