@@ -208,11 +208,7 @@ public class RouteActivity extends Activity implements View.OnClickListener {
 			loading.setVisibility(View.GONE);
 			result.setVisibility(View.VISIBLE);
 		} catch (Exception err) {
-			StringWriter sw = new StringWriter();
-	    	PrintWriter pw = new PrintWriter(sw);
-	    	err.printStackTrace(pw);
-			show_error(sw.toString());
-			//show_error("JSON Parsing Error");
+			show_error("JSON Parsing Error");
 		}
 	}
     
