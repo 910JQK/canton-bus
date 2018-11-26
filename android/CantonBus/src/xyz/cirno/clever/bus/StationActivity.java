@@ -77,7 +77,8 @@ public class StationActivity extends Activity implements View.OnClickListener {
     				車站資訊 t = Parser.解析車站資訊(step1_response, response);
     				distance_list.setAdapter(new DistanceAdapter(
     						getApplicationContext(),
-    						R.layout.distance_item, t.站距表
+    						R.layout.distance_item,
+    						t.站距表
     				));
     				loading.setVisibility(View.GONE);
     				distance_list.setVisibility(View.VISIBLE);

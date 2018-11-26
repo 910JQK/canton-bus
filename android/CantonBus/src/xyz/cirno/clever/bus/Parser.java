@@ -188,9 +188,6 @@ public class Parser {
 			if ( bus_data.get(i).getInt("retCode") != 0 ) {
 				throw new Exception();
 			}
-			if ( bus_data.get(i).getString("d").equals("") ) {
-				throw new Exception();
-			}
 		}
 		單向線路資訊 I = new 單向線路資訊();
 		JSONObject rb = meta_data.getJSONObject("retData").getJSONObject("rb");
@@ -213,17 +210,26 @@ public class Parser {
 		for (int i=0; i<bus_data.size(); i++) {
 			車輛 B = new 車輛();
 			JSONObject b = bus_data.get(i);
+			if ( !b.getJSONObject("retData").has("d") ) {
+				continue;
+			}
 			JSONObject d = b.getJSONObject("retData").getJSONObject("d");
 			B.發班時間 = d.getString("fbt").substring(0, 5);
 			JSONArray l1 = d.getJSONArray("l");
-			for (int j=0; j<l1.length(); j++) {
-				JSONObject s = l1.getJSONObject(j);
-				if ( s.getInt("ti") >= 0 ) {
-					B.次站號 = s.getString("i");
+			if ( l1.length() > 1 && l1.getJSONObject(1).getInt("ti") > 0 ) {
+				B.次站號 = l1.getJSONObject(0).getString("i");
+			} else {
+				for (int j=0; j<l1.length(); j++) {
+					JSONObject s = l1.getJSONObject(j);
+					if ( s.getInt("ti") >= 0 ) {
+						B.次站號 = s.getString("i");
+						break;
+					}
 				}
-				if ( j == l1.length()-1 && !s.getString("i").equals(I.過站列表.get(I.過站列表.size()-1).過站號) ) {
-					B.短線終到站 = s.getString("n");
-				}
+			}
+			JSONObject last = l1.getJSONObject(l1.length()-1);
+			if ( !last.getString("i").equals(I.過站列表.get(I.過站列表.size()-1).過站號) ) {
+				B.短線終到站 = last.getString("n");
 			}
 			I.車輛列表.add(B);
 		}
@@ -263,7 +269,7 @@ public class Parser {
 			分站 上行站 = 上行站表.get(上行索引);
 			分站 下行站 = 下行站表.get(下行索引);
 			線路圖結點 結點 = new 線路圖結點();
-			if ( 上行站.車站編號 == 下行站.車站編號 ) {
+			if ( 上行站.車站編號.equals(下行站.車站編號) ) {
 				上行索引++;
 				下行索引++;
 				結點.上行分站 = 上行站;
@@ -281,17 +287,18 @@ public class Parser {
 				List<車輛> 車輛列表 = I.上行資訊.車輛列表;
 				for (int i=0; i<車輛列表.size(); i++) {
 					車輛 B = 車輛列表.get(i);
-					if ( B.次站號 == 上行站.過站號 ) {
+					if ( B.次站號.equals(上行站.過站號) ) {
 						結點.上行將到車輛表.add(B);
 					}
 				}
-			} else {
+			}
+			if ( 結點.下行分站 != null ) {
 				結點.對應車站.編號 = 下行站.車站編號;
 				結點.對應車站.車站名 = 下行站.車站名;
 				List<車輛> 車輛列表 = I.下行資訊.車輛列表;
 				for (int i=0; i<車輛列表.size(); i++) {
 					車輛 B = 車輛列表.get(i);
-					if ( B.次站號 == 下行站.過站號 ) {
+					if ( B.次站號.equals(下行站.過站號) ) {
 						結點.下行將到車輛表.add(B);
 					}
 				}

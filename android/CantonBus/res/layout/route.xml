@@ -43,16 +43,21 @@
         	android:id="@+id/top"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
+        	android:layout_weight="0"
+        	android:gravity="left"
     	/>
 		<ListView
 	    	android:id="@+id/route_map"
 	    	android:layout_width="fill_parent"
-	   	 android:layout_height="fill_parent">
+	   	 android:layout_height="fill_parent"
+	   	 android:layout_weight="1">
 		</ListView>
     	<TextView
         	android:id="@+id/bottom"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
+        	android:layout_weight="0"
+        	android:gravity="right"
     	/>
     </LinearLayout>
 </LinearLayout>
