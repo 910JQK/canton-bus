@@ -33,13 +33,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnIt
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Button b = (Button) this.findViewById(R.id.btn);
-        b.setOnClickListener(this);
+        btn = (Button) this.findViewById(R.id.btn);
+        btn.setOnClickListener(this);
         field = (EditText) this.findViewById(R.id.field);
         result_list = (ListView) this.findViewById(R.id.result_list);
         result_list.setOnItemClickListener(this);
     }
     
+    Button btn;
     String html;
     ListView result_list;
     EditText field;
@@ -47,11 +48,19 @@ public class MainActivity extends Activity implements View.OnClickListener, OnIt
     
     @Override
     public void onItemClick(AdapterView<?> adapter, View v, int index, long _) {
-    	Intent intent = new Intent(this, StationActivity.class);
+    	Intent intent = null;
     	if ( 總列表.get(index) instanceof 車站 ) {
+    		intent = new Intent(this, StationActivity.class);
     		車站 s = (車站) 總列表.get(index);
     		intent.putExtra("編號", s.編號);
     		intent.putExtra("車站名", s.車站名);
+    	} else if ( 總列表.get(index) instanceof 線路 ) {
+    		intent = new Intent(this, RouteActivity.class);
+    		線路 r = (線路) 總列表.get(index);
+    		intent.putExtra("編號", r.編號);
+    		intent.putExtra("線路名", r.線路名);
+    	}
+    	if (intent != null) {
     		startActivity(intent);
     	}
     }
@@ -63,6 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnIt
     public Handler req_handler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
+    		btn.setEnabled(true);
     		Bundle data = msg.getData();
     		int status = data.getInt("status");
     		String response = msg.getData().getString("response");
@@ -90,6 +100,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnIt
     
     @Override
     public void onClick(View view) {
+    	btn.setEnabled(false);
     	String name = field.getText().toString();
     	List<NameValuePair> params = new LinkedList<NameValuePair>();
     	params.add(new BasicNameValuePair("name", name));

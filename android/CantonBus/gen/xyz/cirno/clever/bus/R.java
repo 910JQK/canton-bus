@@ -14,22 +14,35 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
+        public static final int bottom=0x7f04000f;
         public static final int btn=0x7f040004;
         public static final int detail=0x7f040007;
-        public static final int distance_list=0x7f04000a;
+        public static final int distance_list=0x7f040015;
         public static final int down=0x7f040002;
+        public static final int down_bus=0x7f040014;
+        public static final int down_sub=0x7f040013;
         public static final int field=0x7f040003;
         public static final int loading=0x7f040008;
         public static final int name=0x7f040000;
         public static final int progress=0x7f040009;
+        public static final int result=0x7f04000c;
         public static final int result_list=0x7f040005;
+        public static final int retry=0x7f04000a;
+        public static final int retry_btn=0x7f04000b;
+        public static final int route_map=0x7f04000e;
+        public static final int station=0x7f040012;
         public static final int title=0x7f040006;
+        public static final int top=0x7f04000d;
         public static final int up=0x7f040001;
+        public static final int up_bus=0x7f040010;
+        public static final int up_sub=0x7f040011;
     }
     public static final class layout {
         public static final int distance_item=0x7f030000;
         public static final int main=0x7f030001;
         public static final int result_item=0x7f030002;
-        public static final int station=0x7f030003;
+        public static final int route=0x7f030003;
+        public static final int route_map_item=0x7f030004;
+        public static final int station=0x7f030005;
     }
 }

@@ -1,10 +1,13 @@
 package xyz.cirno.clever.bus;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import xyz.cirno.clever.bus.Parser.*;
@@ -20,7 +23,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
-public class StationActivity extends Activity {
+public class StationActivity extends Activity implements View.OnClickListener {
 	static final String API_URL = "https://rycxapi.gci-china.com/xxt-min-api/bus/";
 	static final String ACTION_ROUTESTATION = "routeStation/getByStation.do?";
 	static final String ACTION_RUNBUS = "runbus/getByStation.do?";
@@ -29,13 +32,20 @@ public class StationActivity extends Activity {
 	String step1_response;
 	ListView distance_list;
 	View loading;
+	View retry;
+	Button retry_btn;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.station);
+        ActionBar action_bar = getActionBar();
+        action_bar.setDisplayHomeAsUpEnabled(true);
         loading = findViewById(R.id.loading);
         distance_list = (ListView) findViewById(R.id.distance_list);
+        retry = findViewById(R.id.retry);
+        retry_btn = (Button) findViewById(R.id.retry_btn);
+        retry_btn.setOnClickListener(this);
         Intent intent = getIntent();
         String 編號 = intent.getStringExtra("編號");
         String 車站名 = intent.getStringExtra("車站名");
@@ -44,7 +54,14 @@ public class StationActivity extends Activity {
         send_request();
     }
 	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		finish();
+		return true;
+	}
+	
     public void show_error(String message) {
+    	loading.setVisibility(View.GONE);
+    	retry.setVisibility(View.VISIBLE);
     	Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
     
@@ -98,4 +115,11 @@ public class StationActivity extends Activity {
         	}
         });
     }
+
+	@Override
+	public void onClick(View v) {
+		retry.setVisibility(View.GONE);
+		loading.setVisibility(View.VISIBLE);
+		send_request();
+	}
 }

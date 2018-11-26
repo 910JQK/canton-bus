@@ -29,7 +29,7 @@ class ResultAdapter extends ArrayAdapter {
 		} else if ( item instanceof 車站 ) {
 			車站 s = (車站) item;
 			title_field.setText(s.車站名);
-			detail_field.setText("车站");
+			detail_field.setText("");
 		}
 		return v;
 	}
