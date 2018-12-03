@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
     <item
         android:id="@+id/add_bookmark"
-        android:title="Mark"
+        android:title="收藏"
 		android:orderInCategory="0"
 	/>
     <item
         android:id="@+id/reload"
-        android:title="Reload"
+        android:title="刷新"
 		android:orderInCategory="0"
 	/>
 </menu>

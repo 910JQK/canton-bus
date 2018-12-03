@@ -17,12 +17,15 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class BookmarkListActivity extends Activity implements OnItemClickListener {
+public class BookmarkListActivity extends Activity implements OnItemClickListener, OnItemLongClickListener {
 	List<JSONObject> list = new ArrayList<>();
+	BookmarkAdapter adapter;
+	Bookmarks bookmarks;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,8 +35,10 @@ public class BookmarkListActivity extends Activity implements OnItemClickListene
         action_bar.setDisplayHomeAsUpEnabled(true);
         ListView list_view = (ListView) findViewById(R.id.bookmark_list);
         list_view.setOnItemClickListener(this);
+        list_view.setOnItemLongClickListener(this);
+        bookmarks = new Bookmarks(getApplicationContext());
         try {
-        	JSONObject b = (new Bookmarks(getApplicationContext())).read();
+        	JSONObject b = bookmarks.read();
         	JSONObject r = b.getJSONObject("route");
         	JSONObject s = b.getJSONObject("station");
         	list = new ArrayList<>();
@@ -50,7 +55,7 @@ public class BookmarkListActivity extends Activity implements OnItemClickListene
         	it = s.keys();
         	while (it.hasNext()) {
         		String key = it.next();
-        		String name = r.getJSONObject(key).getString("name");
+        		String name = s.getJSONObject(key).getString("name");
         		JSONObject item = new JSONObject();
         		item.put("type", "station");
         		item.put("id", key);
@@ -67,13 +72,14 @@ public class BookmarkListActivity extends Activity implements OnItemClickListene
         			}
         		}
         	});
-        	list_view.setAdapter(new BookmarkAdapter(
+        	adapter = new BookmarkAdapter(
         			getApplicationContext(),
         			R.layout.bookmark_item,
         			list
-        	));
+        	);
+        	list_view.setAdapter(adapter);
         } catch (Exception err) {
-	    	just_show_error("Error loading bookmarks");
+        	just_show_error("Error loading bookmarks");
         }
 	}
 	
@@ -96,6 +102,21 @@ public class BookmarkListActivity extends Activity implements OnItemClickListene
 		} catch (Exception err) {
 			just_show_error("Error reading list");
 		}
+	}
+	
+	@Override
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long _) {
+		try {
+			JSONObject item = list.get(position);
+			JSONObject b = bookmarks.read();
+			b.getJSONObject(item.getString("type")).remove(item.getString("id"));
+			bookmarks.write(b);
+			list.remove(position);
+			adapter.notifyDataSetChanged();
+		} catch (Exception err) {
+			just_show_error("Error removing item");
+		}
+		return false;
 	}
 	
 	public void just_show_error(String message) {
