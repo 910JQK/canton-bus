@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -15,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -40,8 +42,11 @@ public class RouteActivity extends Activity implements View.OnClickListener {
 	TextView bottom;
 	ListView route_map;
 	Button retry_btn;
+	Menu top_right_menu;
 	
+	Bookmarks bookmarks;
 	String 線路編號;
+	String 線路名稱;
 	String response_meta_up;
 	String response_meta_down;
 	List<車輛標識> id_up = new ArrayList();
@@ -65,27 +70,69 @@ public class RouteActivity extends Activity implements View.OnClickListener {
         route_map = (ListView) findViewById(R.id.route_map);
         retry_btn = (Button) findViewById(R.id.retry_btn);
         retry_btn.setOnClickListener(this);
+        bookmarks = new Bookmarks(getApplicationContext());
         Intent intent = getIntent();
         String 編號 = intent.getStringExtra("編號");
         String 線路名 = intent.getStringExtra("線路名");
         setTitle(線路名);
         線路編號 = 編號;
+        線路名稱 = 線路名;
         send_request();
 	}
 	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		finish();
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		try {
+			JSONObject b = bookmarks.read().getJSONObject("route");
+			if (!b.has(線路編號)) {
+				getMenuInflater().inflate(R.menu.top_right, menu);
+			} else {
+				getMenuInflater().inflate(R.menu.top_right_single, menu);
+			}
+		} catch (Exception err) {
+			just_show_error("Error loading bookmarks");
+		}
+		top_right_menu = menu;
 		return true;
+	}
+	
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if ( id == android.R.id.home ) {
+			finish();
+		} else if ( id == R.id.reload ) {
+			send_request();
+		} else if ( id == R.id.add_bookmark ) {
+			try {
+				JSONObject b = bookmarks.read();
+				JSONObject r = new JSONObject();
+				r.put("name", 線路名稱);
+				b.getJSONObject("route").put(線路編號, r);
+				bookmarks.write(b);
+				top_right_menu.findItem(R.id.add_bookmark).setVisible(false);
+				invalidateOptionsMenu();
+			} catch (Exception err) {
+				just_show_error("Error saving bookmarks");
+			}
+		}
+		return true;
+	}
+		
+	public void just_show_error(String message) {
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 	}
 	
     public void show_error(String message) {
     	loading.setVisibility(View.GONE);
+    	result.setVisibility(View.GONE);
     	retry.setVisibility(View.VISIBLE);
     	Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
     
     public void send_request () {
     	retry.setVisibility(View.GONE);
+    	result.setVisibility(View.GONE);
     	loading.setVisibility(View.VISIBLE);
     	response_bus_up.clear();
     	response_bus_down.clear();
@@ -214,8 +261,6 @@ public class RouteActivity extends Activity implements View.OnClickListener {
     
     @Override
     public void onClick(View v) {
-    	retry.setVisibility(View.GONE);
-    	loading.setVisibility(View.VISIBLE);
     	send_request();
     }
 }

@@ -35,12 +35,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnIt
         setContentView(R.layout.main);
         btn = (Button) this.findViewById(R.id.btn);
         btn.setOnClickListener(this);
+        bookmark_btn = (Button) this.findViewById(R.id.bookmark_btn);
+        bookmark_btn.setOnClickListener(this);
         field = (EditText) this.findViewById(R.id.field);
         result_list = (ListView) this.findViewById(R.id.result_list);
         result_list.setOnItemClickListener(this);
     }
     
     Button btn;
+    Button bookmark_btn;
     String html;
     ListView result_list;
     EditText field;
@@ -100,10 +103,16 @@ public class MainActivity extends Activity implements View.OnClickListener, OnIt
     
     @Override
     public void onClick(View view) {
-    	btn.setEnabled(false);
-    	String name = field.getText().toString();
-    	List<NameValuePair> params = new LinkedList<NameValuePair>();
-    	params.add(new BasicNameValuePair("name", name));
-        Request.send(API_URL+ACTION_SEARCH+URLEncodedUtils.format(params, "utf-8"), req_handler);
+    	int id = view.getId();
+    	if ( id == R.id.btn ) {
+    		btn.setEnabled(false);
+    		String name = field.getText().toString();
+    		List<NameValuePair> params = new LinkedList<NameValuePair>();
+    		params.add(new BasicNameValuePair("name", name));
+    		Request.send(API_URL+ACTION_SEARCH+URLEncodedUtils.format(params, "utf-8"), req_handler);
+    	} else if ( id == R.id.bookmark_btn ) {
+    		Intent intent = new Intent(this, BookmarkListActivity.class);
+    		startActivity(intent);
+    	} 
     }
 }

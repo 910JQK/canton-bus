@@ -164,7 +164,7 @@ public class Parser {
 	static class 車輛 {
 		String 發班時間;
 		String 短線終到站 = "";
-		String 次站號;
+		String 次站號 = "";
 	}
 	static class 單向線路資訊 {
 		String 線路名;
@@ -231,7 +231,19 @@ public class Parser {
 			if ( !last.getString("i").equals(I.過站列表.get(I.過站列表.size()-1).過站號) ) {
 				B.短線終到站 = last.getString("n");
 			}
-			I.車輛列表.add(B);
+			if ( !B.次站號.equals("") ) {
+				I.車輛列表.add(B);
+				/* 運營結束的車輛可返回 {
+				 * '發班時間': '13:12',
+				 * '班次類型': '全程',
+				 * '過站表': [
+				 * 		{
+				 * 			'車站名稱':'天河客运站总站',
+				 * 			'預估時間': '-1',
+				 * 			'過站車站編號': '10000303'
+				 * 		}
+				 * 	]} 故次站號可能不存在 */
+			}
 		}
 		return I;
 	}

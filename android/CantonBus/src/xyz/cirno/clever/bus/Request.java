@@ -14,7 +14,7 @@ import android.os.Bundle;
 
 public class Request {
 	
-	private static final int timeout = 5000;
+	private static final int timeout = 8000;
 	
 	static void send(final String url_str, final Handler handler) {
 		Runnable request = new Runnable() {
