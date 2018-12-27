@@ -24,7 +24,7 @@ public class StartActivity extends Activity implements OnItemClickListener {
         list.add(new NavItem(R.drawable.search, "搜索", "搜索线路或车站"));
         list.add(new NavItem(R.drawable.had_star, "收藏", "查看收藏夹"));
         list.add(new NavItem(R.drawable.route, "通知", "查看线路调整通知"));
-        list.add(new NavItem(R.drawable.info, "关于", "关于本软件"));
+        list.add(new NavItem(R.drawable.info, "帮助", "查看使用方法及提示"));
         NavAdapter adapter = new NavAdapter(
         		getBaseContext(),
         		R.layout.nav_item,

@@ -57,6 +57,7 @@ public class RouteActivity extends Activity implements View.OnClickListener, OnI
 	List<String> response_bus_down = new ArrayList<>();
 	線路全資訊 info;
 	List<線路圖結點> 線路圖;
+	Boolean ready = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,11 @@ public class RouteActivity extends Activity implements View.OnClickListener, OnI
 			JSONObject b = bookmarks.read().getJSONObject("route");
 			if (!b.has(線路編號)) {
 				getMenuInflater().inflate(R.menu.top_right, menu);
+				//menu.getItem(0).setIcon(R.drawable.refresh);
+				//menu.getItem(1).setIcon(R.drawable.star);
 			} else {
 				getMenuInflater().inflate(R.menu.top_right_single, menu);
+				//menu.getItem(0).setIcon(R.drawable.refresh);
 			}
 		} catch (Exception err) {
 			just_show_error("Error loading bookmarks");
@@ -106,7 +110,9 @@ public class RouteActivity extends Activity implements View.OnClickListener, OnI
 		if ( id == android.R.id.home ) {
 			finish();
 		} else if ( id == R.id.reload ) {
-			send_request();
+			if(ready) {
+				send_request();
+			}
 		} else if ( id == R.id.add_bookmark ) {
 			try {
 				JSONObject b = bookmarks.read();
@@ -243,12 +249,12 @@ public class RouteActivity extends Activity implements View.OnClickListener, OnI
 			info = Parser.解析線路全資訊(response_meta_up, response_meta_down, response_bus_up, response_bus_down);
 			線路圖 = info.線路圖;
 			top.setText(String.format(
-				"上行: %s → %s",
+				"⇩ 上行  %s ~ %s",
 				info.基本資訊.上行資訊.首班時間,
 				info.基本資訊.上行資訊.尾班時間
 			));
 			bottom.setText(String.format(
-				"下行: %s → %s",
+				"%s ~ %s  下行 ⇧",
 				info.基本資訊.下行資訊.首班時間,
 				info.基本資訊.下行資訊.尾班時間
 			));
@@ -259,6 +265,7 @@ public class RouteActivity extends Activity implements View.OnClickListener, OnI
 			));
 			loading.setVisibility(View.GONE);
 			result.setVisibility(View.VISIBLE);
+			ready = true;
 		} catch (Exception err) {
 			show_error("JSON Parsing Error");
 			/*

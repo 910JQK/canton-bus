@@ -42,6 +42,7 @@ public class StationActivity extends Activity implements View.OnClickListener, O
 	Bookmarks bookmarks;
 	Menu top_right_menu;
 	List<線路狀態> 站距表;
+	Boolean ready = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +72,11 @@ public class StationActivity extends Activity implements View.OnClickListener, O
 			JSONObject b = bookmarks.read().getJSONObject("station");
 			if (!b.has(車站編號)) {
 				getMenuInflater().inflate(R.menu.top_right, menu);
+				//menu.getItem(0).setIcon(R.drawable.refresh);
+				//menu.getItem(1).setIcon(R.drawable.star);
 			} else {
 				getMenuInflater().inflate(R.menu.top_right_single, menu);
+				//menu.getItem(0).setIcon(R.drawable.refresh);
 			}
 		} catch (Exception err) {
 			just_show_error("Error loading bookmarks");
@@ -87,7 +91,9 @@ public class StationActivity extends Activity implements View.OnClickListener, O
 		if ( id == android.R.id.home ) {
 			finish();
 		} else if ( id == R.id.reload ) {
-			send_request();
+			if (ready) {
+				send_request();
+			}
 		} else if ( id == R.id.add_bookmark ) {
 			try {
 				JSONObject b = bookmarks.read();
@@ -130,6 +136,7 @@ public class StationActivity extends Activity implements View.OnClickListener, O
     						R.layout.distance_item,
     						t.站距表
     				));
+    				ready = true;
     				loading.setVisibility(View.GONE);
     				distance_list.setVisibility(View.VISIBLE);
     			} catch (Exception e) {

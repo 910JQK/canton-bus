@@ -3,6 +3,7 @@ package xyz.cirno.clever.bus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +11,72 @@ import org.json.JSONObject;
 import android.util.Log;
 
 public class Parser {
+	static String 簡化站名 (String 原名) {
+		String s = 原名;
+		s = s.replaceAll("[(（][^）)]*[）)]", "");
+		s = s.replaceAll("总站$", "");
+		s = s.replaceAll("([^运东西南北车铁])站$", "$1");
+		s = s.replaceAll("([桥路][东西南北])站$", "$1");
+		s = s.replaceAll("(塔[东西南北])站$", "$1");
+		s = s.replaceAll("(路口[东西南北])站$", "$1");
+		s = s.replaceAll("(立交[东西南北])站$", "$1");
+		s = s.replaceAll("(大道[东西南北])站$", "$1");
+		s = s.replaceAll("(广场[东西南北])站$", "$1");
+		s = s.replaceAll("(中心[东西南北])站$", "$1");
+		s = s.replaceAll("(小北)站$", "$1");
+		s = s.replaceAll("(奕西)站$", "$1");
+		s = s.replaceAll("(鹤南)站$", "$1");
+		s = s.replaceAll("(联和北)站$", "$1");
+		s = s.replaceAll("(联桂北)站$", "$1");
+		s = s.replaceAll("(上冲南)站$", "$1");
+		s = s.replaceAll("(西基东)站$", "$1");
+		s = s.replaceAll("(童心北)站$", "$1");
+		s = s.replaceAll("(沐陂西)站$", "$1");
+		s = s.replaceAll("(同福[西东])站$", "$1");
+		s = s.replaceAll("(和平[西东])站$", "$1");
+		s = s.replaceAll("(二沙[西东])站$", "$1");
+		s = s.replaceAll("(一德[西东])站$", "$1");
+		s = s.replaceAll("(万福[西东])站$", "$1");
+		s = s.replaceAll("(龙口[西东])站$", "$1");
+		return s;
+	}
+	static String 提取站名注解 (String 站名) {
+		String s = 站名;
+		String r = "";
+		int i, c = 0;
+		for (i=0; i<s.length(); i++) {
+			String u = s.substring(i,i+1);
+			if ( u.equals(")") || u.equals("）") ) {
+				c--;
+			}
+			if ( c == 1 ) {
+				r += u;
+			}
+			if ( u.equals("(") || u.equals("（") ) {
+				c++;
+			}
+		}
+		if (!r.equals("")) {
+			return String.format("(%s)", r);
+		}
+		return r;
+	}
+	static String 簡化總站名 (String 原名) {
+		String s = 原名;
+		s = s.replaceAll("[(（）)]", "");
+		return s;
+	}
+	static String 簡化線路名 (String 原名) {
+		String s = 原名;
+		s = s.replace("高峰快线", "快线");
+		s = s.replace("高速专线", "高速");
+		s = s.replace("大学城", "专线");
+		s = s.replace("假日专线", "假日");
+		s = s.replaceAll("[^0-9]*班车", "班");
+		s = s.replaceAll("([0-9ABC])线$", "$1");
+		s = s.replaceAll("([0-9ABC])路$", "$1");
+		return s;
+	}
 	static class 線路 {
 		String 編號;
 		String 線路名;

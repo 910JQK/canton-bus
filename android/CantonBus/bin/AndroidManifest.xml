@@ -5,7 +5,7 @@
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="15" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <application android:icon="@drawable/ic_launcher" android:label="广州实时公交" android:theme="@style/MyTheme">
+    <application android:icon="@drawable/bus" android:label="广州实时公交" android:theme="@style/MyTheme">
         <activity android:name="StartActivity"
             	  android:label="广州实时公交">
             <intent-filter>

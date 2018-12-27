@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BookmarkAdapter extends ArrayAdapter {
@@ -21,8 +22,14 @@ public class BookmarkAdapter extends ArrayAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = LayoutInflater.from(getContext()).inflate(resourceId, null);
 		TextView name_field = (TextView) v.findViewById(R.id.name);
+		ImageView icon_field = (ImageView) v.findViewById(R.id.icon);
 		JSONObject item = (JSONObject) getItem(position);
 		name_field.setText(item.optString("name"));
+		if(item.optString("type").equals("route")) {
+			icon_field.setImageResource(R.drawable.list_bus);
+		} else {
+			icon_field.setImageResource(R.drawable.list_stop);
+		}
 		return v;
 	}
 }
