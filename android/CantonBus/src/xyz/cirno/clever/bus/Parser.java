@@ -184,9 +184,9 @@ public class Parser {
 			throw new Exception();
 		}
 		for (int i=0; i<r_bus.size(); i++) {
-			bus_data.add(new JSONObject(r_bus.get(i)) );
-			if ( bus_data.get(i).getInt("retCode") != 0 ) {
-				throw new Exception();
+			JSONObject t = new JSONObject(r_bus.get(i));
+			if ( t.getInt("retCode") == 0 ) {
+				bus_data.add(t);
 			}
 		}
 		單向線路資訊 I = new 單向線路資訊();

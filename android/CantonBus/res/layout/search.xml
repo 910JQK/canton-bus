@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".SearchActivity"
+    >
+<EditText
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:hint="在这里输入线路名称或车站名称"
+    android:id="@+id/field"
+    />
+<Button
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textSize="25sp"
+    android:text="搜索线路或车站"
+    android:textAllCaps="false"
+    android:id="@+id/btn"
+    />
+<!-- <Button
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textSize="25sp"
+    android:text="查看收藏夹"
+    android:textAllCaps="false"
+    android:id="@+id/bookmark_btn"
+    /> -->
+<!--<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    > -->
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/result_list"
+        >
+    </ListView>
+    <!--
+	<TextView  
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" 
+    	android:text="Hello World"
+    	android:scrollbars="vertical"
+    	android:id="@+id/text"
+    />
+     -->
+<!--</ScrollView>-->
+</LinearLayout>

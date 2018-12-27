@@ -8,6 +8,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,7 +27,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-public class StationActivity extends Activity implements View.OnClickListener {
+public class StationActivity extends Activity implements View.OnClickListener, OnItemClickListener {
 	static final String API_URL = "https://rycxapi.gci-china.com/xxt-min-api/bus/";
 	static final String ACTION_ROUTESTATION = "routeStation/getByStation.do?";
 	static final String ACTION_RUNBUS = "runbus/getByStation.do?";
@@ -39,6 +41,7 @@ public class StationActivity extends Activity implements View.OnClickListener {
 	Button retry_btn;
 	Bookmarks bookmarks;
 	Menu top_right_menu;
+	List<線路狀態> 站距表;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class StationActivity extends Activity implements View.OnClickListener {
         action_bar.setDisplayHomeAsUpEnabled(true);
         loading = findViewById(R.id.loading);
         distance_list = (ListView) findViewById(R.id.distance_list);
+        distance_list.setOnItemClickListener(this);
         retry = findViewById(R.id.retry);
         retry_btn = (Button) findViewById(R.id.retry_btn);
         retry_btn.setOnClickListener(this);
@@ -120,8 +124,9 @@ public class StationActivity extends Activity implements View.OnClickListener {
     		if (status == 200) {
     			try {
     				車站資訊 t = Parser.解析車站資訊(step1_response, response);
+    				站距表 = t.站距表;
     				distance_list.setAdapter(new DistanceAdapter(
-    						getApplicationContext(),
+    						getBaseContext(),
     						R.layout.distance_item,
     						t.站距表
     				));
@@ -168,5 +173,16 @@ public class StationActivity extends Activity implements View.OnClickListener {
 	@Override
 	public void onClick(View v) {
 		send_request();
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
+		if (index < 站距表.size()) {
+			Intent intent = new Intent(this, RouteActivity.class);
+			線路 r = 站距表.get(index).線路物件;
+			intent.putExtra("編號", r.編號);
+    		intent.putExtra("線路名", r.線路名);
+    		startActivity(intent);
+		}
 	}
 }

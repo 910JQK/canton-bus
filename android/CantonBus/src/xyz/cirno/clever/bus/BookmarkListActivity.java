@@ -73,7 +73,7 @@ public class BookmarkListActivity extends Activity implements OnItemClickListene
         		}
         	});
         	adapter = new BookmarkAdapter(
-        			getApplicationContext(),
+        			getBaseContext(),
         			R.layout.bookmark_item,
         			list
         	);

@@ -19,6 +19,8 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-public class RouteActivity extends Activity implements View.OnClickListener {
+public class RouteActivity extends Activity implements View.OnClickListener, OnItemClickListener {
 	
 	static final String API_URL = "https://rycxapi.gci-china.com/xxt-min-api/bus/";
 	static final String ACTION_ROUTE = "route/getByRouteIdAndDirection.do?";
@@ -54,6 +56,7 @@ public class RouteActivity extends Activity implements View.OnClickListener {
 	List<String> response_bus_up = new ArrayList<>();
 	List<String> response_bus_down = new ArrayList<>();
 	線路全資訊 info;
+	List<線路圖結點> 線路圖;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,7 @@ public class RouteActivity extends Activity implements View.OnClickListener {
         top = (TextView) findViewById(R.id.top);
         bottom = (TextView) findViewById(R.id.bottom);
         route_map = (ListView) findViewById(R.id.route_map);
+        route_map.setOnItemClickListener(this);
         retry_btn = (Button) findViewById(R.id.retry_btn);
         retry_btn.setOnClickListener(this);
         bookmarks = new Bookmarks(getApplicationContext());
@@ -237,6 +241,7 @@ public class RouteActivity extends Activity implements View.OnClickListener {
 	public void parse_response () {
 		try {
 			info = Parser.解析線路全資訊(response_meta_up, response_meta_down, response_bus_up, response_bus_down);
+			線路圖 = info.線路圖;
 			top.setText(String.format(
 				"上行: %s → %s",
 				info.基本資訊.上行資訊.首班時間,
@@ -248,7 +253,7 @@ public class RouteActivity extends Activity implements View.OnClickListener {
 				info.基本資訊.下行資訊.尾班時間
 			));
 			route_map.setAdapter(new RouteMapAdapter(
-					getApplicationContext(),
+					getBaseContext(),
 					R.layout.route_map_item,
 					info.線路圖
 			));
@@ -256,6 +261,12 @@ public class RouteActivity extends Activity implements View.OnClickListener {
 			result.setVisibility(View.VISIBLE);
 		} catch (Exception err) {
 			show_error("JSON Parsing Error");
+			/*
+			StringWriter sw = new StringWriter();
+	    	PrintWriter pw = new PrintWriter(sw);
+	    	err.printStackTrace(pw);
+	    	show_error(sw.toString());
+	    	*/
 		}
 	}
     
@@ -263,4 +274,15 @@ public class RouteActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
     	send_request();
     }
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int index, long id) {
+		if ( index < 線路圖.size() ) {
+			Intent intent = new Intent(this, StationActivity.class);
+			車站 s = 線路圖.get(index).對應車站;
+			intent.putExtra("編號", s.編號);
+    		intent.putExtra("車站名", s.車站名);
+    		startActivity(intent);
+		}
+	}
 }

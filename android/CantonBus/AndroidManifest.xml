@@ -5,31 +5,31 @@
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="15" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <application android:icon="@drawable/ic_launcher" android:label="广州实时公交">
-        <activity android:name="MainActivity"
-                  android:label="广州实时公交">
+    <application android:icon="@drawable/ic_launcher" android:label="广州实时公交" android:theme="@style/MyTheme">
+        <activity android:name="StartActivity"
+            	  android:label="广州实时公交">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="StationActivity"
-                  android:label="车站信息">
+        <activity android:name="SearchActivity"
+                  android:label="实时公交搜索">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
+                android:value="StartActivity" />
+        </activity>
+        <activity android:name="StationActivity"
+                  android:label="车站信息">
         </activity>
         <activity android:name="RouteActivity"
                   android:label="线路信息">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
         </activity>
         <activity android:name="BookmarkListActivity"
                   android:label="收藏夹">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
+                android:value="StartActivity" />
         </activity>
     </application>
 </manifest>
