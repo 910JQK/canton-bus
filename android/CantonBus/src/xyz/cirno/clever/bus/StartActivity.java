@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -49,7 +51,13 @@ public class StartActivity extends Activity implements OnItemClickListener {
 			startActivity(notice);
 		}
 		if (index == 3) {
-			
+			WebView webView = new WebView(this);
+			webView.loadUrl("file:///android_asset/help.html");
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("使用方法")
+			       .setView(webView)
+			       .setPositiveButton("OK", null)
+			       .show();
 		}
 	}
 }

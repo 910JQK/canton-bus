@@ -103,6 +103,7 @@ public class StationActivity extends Activity implements View.OnClickListener, O
 				bookmarks.write(b);
 				top_right_menu.findItem(R.id.add_bookmark).setVisible(false);
 				invalidateOptionsMenu();
+				Toast.makeText(getApplicationContext(), "收藏成功", Toast.LENGTH_LONG).show();
 			} catch (Exception err) {
 				just_show_error("Error saving bookmarks");
 			}

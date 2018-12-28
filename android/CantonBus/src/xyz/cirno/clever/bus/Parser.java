@@ -14,7 +14,7 @@ public class Parser {
 	static String 簡化站名 (String 原名) {
 		String s = 原名;
 		s = s.replaceAll("[(（][^）)]*[）)]", "");
-		s = s.replaceAll("总站$", "");
+		s = s.replaceAll("(公交)*总站$", "");
 		s = s.replaceAll("([^运东西南北车铁])站$", "$1");
 		s = s.replaceAll("([桥路][东西南北])站$", "$1");
 		s = s.replaceAll("(塔[东西南北])站$", "$1");
@@ -32,6 +32,8 @@ public class Parser {
 		s = s.replaceAll("(西基东)站$", "$1");
 		s = s.replaceAll("(童心北)站$", "$1");
 		s = s.replaceAll("(沐陂西)站$", "$1");
+		s = s.replaceAll("(长寿[西东])站$", "$1");
+		s = s.replaceAll("(惠福[西东])站$", "$1");
 		s = s.replaceAll("(同福[西东])站$", "$1");
 		s = s.replaceAll("(和平[西东])站$", "$1");
 		s = s.replaceAll("(二沙[西东])站$", "$1");

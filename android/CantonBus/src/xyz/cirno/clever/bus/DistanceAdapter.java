@@ -33,22 +33,22 @@ public class DistanceAdapter extends ArrayAdapter {
 		if (s.次車距離.上行距離 == -2) {
 			up_tip.setText("上行不过站");
 		} else if (s.次車距離.上行距離 == -1) {
-			up_name.setText(Parser.簡化總站名(s.線路物件.終到));
+			up_name.setText(Parser.簡化站名(s.線路物件.終到));
 			up_label.setText("方向");
 			up_dist.setText("尚未发班");
 		} else {
-			up_name.setText(Parser.簡化總站名(s.線路物件.終到));
+			up_name.setText(Parser.簡化站名(s.線路物件.終到));
 			up_label.setText("方向");
 			up_dist.setText(String.format("%s 站", s.次車距離.上行距離));
 		}
 		if (s.次車距離.下行距離 == -2) {
 			down_tip.setText("下行不过站");
 		} else if (s.次車距離.下行距離 == -1) {
-			down_name.setText(Parser.簡化總站名(s.線路物件.始發));
+			down_name.setText(Parser.簡化站名(s.線路物件.始發));
 			down_label.setText("方向");
 			down_dist.setText("尚未发班");
 		} else {
-			down_name.setText(Parser.簡化總站名(s.線路物件.始發));
+			down_name.setText(Parser.簡化站名(s.線路物件.始發));
 			down_label.setText("方向");
 			down_dist.setText(String.format("%s 站", s.次車距離.下行距離));
 		}

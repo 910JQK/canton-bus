@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:textSize="13sp"
-        android:textColor="#DE9424"
+        android:textColor="#CD8424"
     />
     <TextView
         android:layout_weight="0"
@@ -23,7 +23,7 @@
         android:layout_width="25dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#22BB22"
+        android:textColor="#229A22"
         android:gravity="center"
     />
     <LinearLayout 
@@ -63,7 +63,7 @@
         android:layout_width="25dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#22BB22"
+        android:textColor="#229A22"
         android:gravity="center"
     />
     <TextView
@@ -73,6 +73,6 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:textSize="13sp"
-        android:textColor="#DE9424"
+        android:textColor="#CD8424"
     />
 </LinearLayout>
